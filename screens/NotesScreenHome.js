@@ -22,7 +22,7 @@ export default function NotesScreenHome() {
       <TouchableOpacity
         style={theme.button}
         onPress={() => {
-          navigation.navigate("NotesAddScreen");
+          navigation.navigate("NotesScreenAdd");
         }}
       >
         <Text style={theme.buttonText}>Add Note</Text>

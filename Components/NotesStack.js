@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import NotesScreenHome from "../screens/NotesScreenHome";
-import NotesAddScreen from "../screens/NotesAddScreen";
+import NotesScreenAdd from "../screens/NotesScreenAdd";
 import NotesScreenDetails from "../screens/NotesScreenDetails";
 
 const NotesStackNav = createStackNavigator();
@@ -15,8 +15,8 @@ export default function NotesStack() {
         options={{ headerShown: false }}
       />
       <NotesStackNav.Screen
-        name="NotesAddScreen"
-        component={NotesAddScreen}
+        name="NotesScreenAdd"
+        component={NotesScreenAdd}
         options={{ headerShown: false }}
       />
       <NotesStackNav.Screen
