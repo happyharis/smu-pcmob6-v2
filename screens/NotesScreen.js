@@ -8,17 +8,21 @@ export default function NotesScreen() {
   return (
     <View style={theme.container}>
       <Text style={theme.title}>Notes</Text>
-      <View style={styles.noteCard}>
+
+      <TouchableOpacity
+        style={styles.noteCard}
+        onPress={() => navigation.navigate("NotesAddScreen")}
+      >
         <Text style={styles.noteCardText}>
           10 excellent font paring tools for designers
         </Text>
-      </View>
+      </TouchableOpacity>
 
       <View style={{ flex: 1 }} />
       <TouchableOpacity
         style={theme.button}
         onPress={() => {
-          navigation.navigate("NotesCreateScreen");
+          navigation.navigate("NotesDetailScreen");
         }}
       >
         <Text style={theme.buttonText}>Add Note</Text>
