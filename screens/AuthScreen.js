@@ -130,15 +130,14 @@ export default function AuthScreen() {
             style={styles.button}
             onPress={isLogInScreen ? login : signUp}
           >
-            <Text style={styles.buttonText}>
-              {isLogInScreen ? "Login" : "Register"}
-            </Text>
+            {loading ? (
+              <ActivityIndicator style={styles.buttonText} />
+            ) : (
+              <Text style={styles.buttonText}>
+                {isLogInScreen ? "Login" : "Register"}
+              </Text>
+            )}
           </TouchableOpacity>
-          {loading ? (
-            <ActivityIndicator style={{ marginLeft: 10 }} />
-          ) : (
-            <View />
-          )}
         </View>
       </View>
       <Text style={styles.errorText}>{errorText}</Text>
@@ -197,6 +196,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   errorText: {
+    marginTop: 20,
     fontSize: 15,
     color: "red",
   },
