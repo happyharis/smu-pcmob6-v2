@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles";
 
-export default function NotesScreen() {
+export default function NotesScreenHome() {
   const navigation = useNavigation();
   return (
     <View style={theme.container}>
@@ -11,7 +11,7 @@ export default function NotesScreen() {
 
       <TouchableOpacity
         style={styles.noteCard}
-        onPress={() => navigation.navigate("NotesAddScreen")}
+        onPress={() => navigation.navigate("NotesDetailScreen")}
       >
         <Text style={styles.noteCardText}>
           10 excellent font paring tools for designers
@@ -22,7 +22,7 @@ export default function NotesScreen() {
       <TouchableOpacity
         style={theme.button}
         onPress={() => {
-          navigation.navigate("NotesDetailScreen");
+          navigation.navigate("NotesAddScreen");
         }}
       >
         <Text style={theme.buttonText}>Add Note</Text>
