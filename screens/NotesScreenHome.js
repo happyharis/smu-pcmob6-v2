@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles";
+import { NotesScreen } from "../constants/screens";
 
 export default function NotesScreenHome() {
   const navigation = useNavigation();
@@ -11,7 +12,7 @@ export default function NotesScreenHome() {
 
       <TouchableOpacity
         style={styles.noteCard}
-        onPress={() => navigation.navigate("NotesScreenDetails")}
+        onPress={() => navigation.navigate(NotesScreen.Details)}
       >
         <Text style={styles.noteCardText}>
           10 excellent font paring tools for designers
@@ -22,7 +23,7 @@ export default function NotesScreenHome() {
       <TouchableOpacity
         style={theme.button}
         onPress={() => {
-          navigation.navigate("NotesScreenAdd");
+          navigation.navigate(NotesScreen.Add);
         }}
       >
         <Text style={theme.buttonText}>Add Note</Text>
