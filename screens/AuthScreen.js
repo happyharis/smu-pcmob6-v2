@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Keyboard,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import {
 } from "react-native";
 import { API, API_LOGIN, API_SIGNUP } from "../constants/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { theme } from "../styles";
 
 if (
   Platform.OS === "android" &&
@@ -87,13 +87,13 @@ export default function AuthScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
+    <View style={theme.container}>
+      <Text style={theme.title}>
         {isLogInScreen ? "Login to your account" : "Register new account"}
       </Text>
-      <View style={styles.inputView}>
+      <View style={theme.inputView}>
         <TextInput
-          style={styles.textInput}
+          style={theme.textInput}
           placeholder="Email"
           placeholderTextColor="#003f5c"
           value={username}
@@ -101,9 +101,9 @@ export default function AuthScreen() {
         />
       </View>
 
-      <View style={styles.inputView}>
+      <View style={theme.inputView}>
         <TextInput
-          style={styles.textInput}
+          style={theme.textInput}
           placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
@@ -115,9 +115,9 @@ export default function AuthScreen() {
       {isLogInScreen ? (
         <View />
       ) : (
-        <View style={styles.inputView}>
+        <View style={theme.inputView}>
           <TextInput
-            style={styles.textInput}
+            style={theme.textInput}
             placeholder="Password Confirm"
             placeholderTextColor="#003f5c"
             secureTextEntry={true}
@@ -129,20 +129,20 @@ export default function AuthScreen() {
       <View>
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
-            style={styles.button}
+            style={theme.button}
             onPress={isLogInScreen ? login : signUp}
           >
             {loading ? (
-              <ActivityIndicator style={styles.buttonText} />
+              <ActivityIndicator style={theme.buttonText} />
             ) : (
-              <Text style={styles.buttonText}>
+              <Text style={theme.buttonText}>
                 {isLogInScreen ? "Login" : "Register"}
               </Text>
             )}
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={styles.errorText}>{errorText}</Text>
+      <Text style={theme.errorText}>{errorText}</Text>
 
       <TouchableOpacity
         onPress={() => {
@@ -150,7 +150,7 @@ export default function AuthScreen() {
           setErrorText("");
         }}
       >
-        <Text style={styles.switchText}>
+        <Text style={theme.switchText}>
           {isLogInScreen
             ? "No account? Sign up now."
             : "Already have an account? Log in here."}
@@ -159,47 +159,3 @@ export default function AuthScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 100,
-    padding: 25,
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 40,
-    marginBottom: 50,
-  },
-  switchText: {
-    fontSize: 20,
-    marginTop: 20,
-    color: "gray",
-  },
-  inputView: {
-    backgroundColor: "#F1F0F5",
-    borderRadius: 5,
-    marginBottom: 30,
-  },
-  textInput: {
-    padding: 20,
-  },
-  button: {
-    backgroundColor: "black",
-    borderRadius: 15,
-    width: "100%",
-  },
-  buttonText: {
-    textAlign: "center",
-    fontWeight: "400",
-    fontSize: 17,
-    padding: 20,
-    color: "white",
-  },
-  errorText: {
-    marginTop: 20,
-    fontSize: 15,
-    color: "red",
-  },
-});

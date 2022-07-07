@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import AuthScreen from "./screens/AuthScreen";
 import React, { useEffect, useState } from "react";
-import HomeStack from "./Components/HomeStack";
+import HomeStack from "./components/HomeStack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 
