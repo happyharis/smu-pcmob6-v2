@@ -1,8 +1,8 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
-import NotesScreen from "../screens/NotesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import NotesStack from "./NotesStack";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -16,7 +16,7 @@ export default function HomeStack() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name == "NotesScreen") {
+          if (route.name == "NotesStack") {
             iconName = "list-alt";
           } else {
             iconName = "user";
@@ -26,7 +26,7 @@ export default function HomeStack() {
         },
       })}
     >
-      <BottomTab.Screen name="NotesScreen" component={NotesScreen} />
+      <BottomTab.Screen name="NotesStack" component={NotesStack} />
       <BottomTab.Screen name="ProfileScreen" component={ProfileScreen} />
     </BottomTab.Navigator>
   );
