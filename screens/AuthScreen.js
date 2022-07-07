@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { API, API_LOGIN, API_SIGNUP } from "../constants/API";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (
   Platform.OS === "android" &&
@@ -41,10 +42,11 @@ export default function AuthScreen() {
         password,
       });
       console.log("Success logging in!" + response);
+      await AsyncStorage.setItem("token", response.data.access_token);
       setLoading(false);
       setUsername("");
       setPassword("");
-      navigation.navigate("Logged In");
+      navigation.navigate("HomeStack");
     } catch (error) {
       setLoading(false);
       console.log("Error logging in!");
