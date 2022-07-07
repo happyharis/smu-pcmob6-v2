@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -10,7 +11,10 @@ export default function ProfileScreen() {
       <View style={{ flex: 1 }} />
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("AuthScreen")}
+        onPress={async () => {
+          navigation.navigate("AuthScreen");
+          await AsyncStorage.removeItem("token");
+        }}
       >
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>

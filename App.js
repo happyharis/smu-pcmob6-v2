@@ -15,6 +15,7 @@ export default function App() {
   async function loadToken() {
     const isLoggedIn = await AsyncStorage.getItem("token");
     setLoggedIn(isLoggedIn);
+    console.log(isLoggedIn);
   }
   useEffect(() => {
     loadToken();
@@ -26,7 +27,7 @@ export default function App() {
     </View>
   );
 
-  return !loggedIn ? (
+  return loggedIn == "" ? (
     <LoadingScreen />
   ) : (
     <NavigationContainer>
