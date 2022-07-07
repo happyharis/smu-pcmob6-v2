@@ -11,7 +11,7 @@ export default function NotesScreenHome() {
 
       <TouchableOpacity
         style={styles.noteCard}
-        onPress={() => navigation.navigate("NotesDetailScreen")}
+        onPress={() => navigation.navigate("NotesScreenDetails")}
       >
         <Text style={styles.noteCardText}>
           10 excellent font paring tools for designers
