@@ -1,8 +1,8 @@
-import { NavigationContainer, StackRouter } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import Auth from "./screens/Auth";
+import AuthScreen from "./screens/AuthScreen";
+import React from "react";
 
 const Stack = createStackNavigator();
 
@@ -16,17 +16,8 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen component={Auth} name="Auth" />
+        <Stack.Screen component={AuthScreen} name="AuthScreen" />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
