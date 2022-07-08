@@ -37,7 +37,7 @@ export default function NotesScreenHome() {
       >
         <Text style={styles.noteCardTitle}>{item.title}</Text>
         <Text style={styles.noteCardBodyText}>
-          {item.content.substring(0, 40)}
+          {item.content.substring(0, 120)}
         </Text>
       </TouchableOpacity>
     );
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderWidth: ".2px",
     padding: 15,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   noteCardTitle: {
     fontSize: 13,
