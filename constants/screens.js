@@ -4,3 +4,5 @@ export const NOTES_SCREEN = {
   Add: "NotesScreenAdd",
 };
 export const AUTH_SCREEN = "AuthScreen";
+export const PROFILE_SCREEN = "ProfileScreen";
+export const CAMERA_SCREEN = "CameraScreen";

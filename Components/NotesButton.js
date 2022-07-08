@@ -32,5 +32,5 @@ export default function NotesButton({ onPress, text, marginBottom }) {
 NotesButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
-  marginBottom: PropTypes.number.isRequired,
+  marginBottom: PropTypes.number,
 };

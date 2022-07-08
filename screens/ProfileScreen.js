@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles";
 import NotesButton from "../components/NotesButton";
+import { CAMERA_SCREEN } from "../constants/screens";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -17,7 +18,10 @@ export default function ProfileScreen() {
           style={{ height: 120, width: 120, borderRadius: 3, marginBottom: 20 }}
         />
 
-        <TouchableOpacity style={styles.outlinedButton}>
+        <TouchableOpacity
+          style={styles.outlinedButton}
+          onPress={() => navigation.navigate(CAMERA_SCREEN)}
+        >
           <Text style={styles.outlinedButtonText}>Upload Photo</Text>
         </TouchableOpacity>
       </View>

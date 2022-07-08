@@ -1,8 +1,8 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
-import ProfileScreen from "../screens/ProfileScreen";
 import NotesStack from "./NotesStack";
+import ProfileStack from "./ProfileStack";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -27,7 +27,7 @@ export default function HomeStack() {
       })}
     >
       <BottomTab.Screen name="NotesStack" component={NotesStack} />
-      <BottomTab.Screen name="ProfileScreen" component={ProfileScreen} />
+      <BottomTab.Screen name="ProfileStack" component={ProfileStack} />
     </BottomTab.Navigator>
   );
 }
