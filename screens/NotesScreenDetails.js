@@ -34,18 +34,31 @@ export default function NotesScreenDetails() {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
         {
           text: "Proceed",
-          onPress: () => {
+          onPress: async () => {
+            await deletePost(id);
             navigation.navigate(NOTES_SCREEN.Home);
           },
           style: "destructive",
         },
       ]
     );
+  }
+
+  async function deletePost(id) {
+    const token = await AsyncStorage.getItem("token");
+    console.log("Deleting " + id);
+    try {
+      const response = await axios.delete(API + API_POSTS + `/${id}`, {
+        headers: { Authorization: `JWT ${token}` },
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function updatePost(id) {
