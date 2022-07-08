@@ -1,12 +1,19 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import { theme } from "../styles";
-export default function NotesButton({ onPress, text }) {
+export default function NotesButton({ onPress, text, marginBottom }) {
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
+
   return (
     <TouchableOpacity
-      style={[theme.button, { marginBottom: 10 }]}
+      style={[theme.button, { marginBottom: marginBottom ?? 10 }]}
       onPress={async () => {
         setLoading(true);
         await onPress();
@@ -25,4 +32,5 @@ export default function NotesButton({ onPress, text }) {
 NotesButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
+  marginBottom: PropTypes.number.isRequired,
 };
