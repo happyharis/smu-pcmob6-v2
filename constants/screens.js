@@ -3,3 +3,4 @@ export const NotesScreen = {
   Details: "NotesScreenDetails",
   Add: "NotesScreenAdd",
 };
+export const AUTH_SCREEN = "AuthScreen";

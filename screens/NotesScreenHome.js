@@ -5,29 +5,17 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles";
-import { NotesScreen } from "../constants/screens";
-
-const notes = [
-  {
-    id: "0",
-    title: "Groceries",
-    content:
-      "Get all the stuff for this evening. Very important are the ingredients for a slow cooking bolognese",
-  },
-  {
-    id: "1",
-    title: "Update insurance",
-    content:
-      "Send mail to Mr Filin and request update plan. Talk to Mel about the changes",
-  },
-];
+import { AUTH_SCREEN, NotesScreen } from "../constants/screens";
+import axios from "axios";
+import { API, API_POSTS } from "../constants/API";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NotesScreenHome() {
   const navigation = useNavigation();
-  const [posts, setPosts] = useState(notes);
+  const [posts, setPosts] = useState("");
 
   function renderItem({ item }) {
     return (
@@ -41,6 +29,28 @@ export default function NotesScreenHome() {
         </Text>
       </TouchableOpacity>
     );
+  }
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
+  async function getPosts() {
+    const token = await AsyncStorage.getItem("token");
+    console.log("Token: " + token);
+    try {
+      const response = await axios.get(API + API_POSTS, {
+        headers: { Authorization: `JWT ${token}` },
+      });
+      console.log(response.data);
+      setPosts(response.data);
+      return "completed";
+    } catch (error) {
+      console.log("error.response:" + error.response.data);
+      if (error.response.data.error == "Invalid token") {
+        navigation.navigate(AUTH_SCREEN);
+      }
+    }
   }
   return (
     <View style={theme.container}>
