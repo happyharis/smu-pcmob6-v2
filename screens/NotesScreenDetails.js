@@ -1,19 +1,22 @@
+import { FontAwesome } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useRef, useState } from "react";
 import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  StyleSheet,
-  Alert,
 } from "react-native";
-import React, { useState } from "react";
-import { theme } from "../styles";
-import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { NotesScreen } from "../constants/screens";
+import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
   const route = useRoute();
+  const bodyInputRef = useRef();
   const navigation = useNavigation();
   const [noteTitle, setNoteTitle] = useState(route.params.title);
   const [noteBody, setNoteBody] = useState(route.params.content);
@@ -40,10 +43,10 @@ export default function NotesScreenDetails() {
     );
   }
 
-  function EditButton() {
+  function SaveChangesButton() {
     return (
       <TouchableOpacity
-        style={theme.button}
+        style={[theme.button, { marginBottom: 10 }]}
         onPress={() => {
           navigation.goBack();
         }}
@@ -54,7 +57,10 @@ export default function NotesScreenDetails() {
   }
 
   return (
-    <View style={[theme.container, { paddingTop: 60 }]}>
+    <KeyboardAvoidingView
+      style={[theme.container, { paddingTop: 60 }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name={"arrow-left"} size={24} color={"black"} />
@@ -62,7 +68,16 @@ export default function NotesScreenDetails() {
 
         <View style={{ flex: 1 }} />
 
-        <TouchableOpacity onPress={() => setEditable(!editable)}>
+        <TouchableOpacity
+          onPress={() => {
+            setEditable(!editable);
+            if (!editable) {
+              setTimeout(() => bodyInputRef.current.focus(), 100);
+            } else {
+              setTimeout(() => bodyInputRef.current.blur(), 100);
+            }
+          }}
+        >
           <FontAwesome
             name={"pencil"}
             size={24}
@@ -93,10 +108,11 @@ export default function NotesScreenDetails() {
         selectionColor={"gray"}
         editable={editable}
         multiline={true}
+        ref={bodyInputRef}
       />
       <View style={{ flex: 1 }} />
-      {editable && <EditButton />}
-    </View>
+      {editable && <SaveChangesButton />}
+    </KeyboardAvoidingView>
   );
 }
 
