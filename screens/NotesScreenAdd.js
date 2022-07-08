@@ -9,11 +9,33 @@ import React, { useState } from "react";
 import { theme } from "../styles";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { API, API_CREATE } from "../constants/API";
+import { NotesScreen } from "../constants/screens";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
   const [noteTitle, setNoteTitle] = useState("");
   const [noteBody, setNoteBody] = useState("");
+
+  async function savePost() {
+    const post = {
+      title: noteTitle,
+      content: noteBody,
+    };
+    const token = await AsyncStorage.getItem("token");
+    try {
+      console.log(token);
+      const response = await axios.post(API + API_CREATE, post, {
+        headers: { Authorization: `JWT ${token}` },
+      });
+      console.log(response.data);
+      navigation.navigate(NotesScreen.Home, { post: post });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <View style={[theme.container, { paddingTop: 60 }]}>
@@ -38,9 +60,7 @@ export default function NotesScreenAdd() {
       <View style={{ flex: 1 }} />
       <TouchableOpacity
         style={theme.button}
-        onPress={() => {
-          navigation.goBack();
-        }}
+        onPress={async () => await savePost()}
       >
         <Text style={theme.buttonText}>Save</Text>
       </TouchableOpacity>
