@@ -1,23 +1,56 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles";
 import { NotesScreen } from "../constants/screens";
 
+const notes = [
+  {
+    id: "0",
+    title: "Groceries",
+    content:
+      "Get all the stuff for this evening. Very important are the ingredients for a slow cooking bolognese",
+  },
+  {
+    id: "1",
+    title: "Update insurance",
+    content:
+      "Send mail to Mr Filin and request update plan. Talk to Mel about the changes",
+  },
+];
+
 export default function NotesScreenHome() {
   const navigation = useNavigation();
-  return (
-    <View style={theme.container}>
-      <Text style={theme.title}>Notes</Text>
+  const [posts, setPosts] = useState(notes);
 
+  function renderItem({ item }) {
+    return (
       <TouchableOpacity
         style={styles.noteCard}
-        onPress={() => navigation.navigate(NotesScreen.Details)}
+        onPress={() => navigation.navigate(NotesScreen.Details, item)}
       >
-        <Text style={styles.noteCardText}>
-          10 excellent font paring tools for designers
+        <Text style={styles.noteCardTitle}>{item.title}</Text>
+        <Text style={styles.noteCardBodyText}>
+          {item.content.substring(0, 40)}
         </Text>
       </TouchableOpacity>
+    );
+  }
+  return (
+    <View style={theme.container}>
+      <Text style={[theme.title, { marginBottom: 20 }]}>notes</Text>
+
+      <FlatList
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(post) => post.id.toString()}
+      />
 
       <View style={{ flex: 1 }} />
       <TouchableOpacity
@@ -34,12 +67,19 @@ export default function NotesScreenHome() {
 
 const styles = StyleSheet.create({
   noteCard: {
-    borderColor: "black",
-    borderWidth: "2px",
-    padding: 10,
+    borderColor: "gray",
+    borderWidth: ".2px",
+    padding: 15,
     borderRadius: 5,
+    marginBottom: 10,
   },
-  noteCardText: {
-    fontSize: 20,
+  noteCardTitle: {
+    fontSize: 13,
+    fontWeight: "500",
+    marginBottom: 7,
+  },
+  noteCardBodyText: {
+    fontSize: 12,
+    fontWeight: "300",
   },
 });
