@@ -4,12 +4,13 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { theme } from "../styles";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Switch } from "react-native-gesture-handler";
+import { NotesScreen } from "../constants/screens";
 
 export default function NotesScreenDetails() {
   const route = useRoute();
@@ -17,6 +18,27 @@ export default function NotesScreenDetails() {
   const [noteTitle, setNoteTitle] = useState(route.params.title);
   const [noteBody, setNoteBody] = useState(route.params.content);
   const [editable, setEditable] = useState(false);
+
+  function showAlertDelete() {
+    Alert.alert(
+      "Delete note",
+      "There is no way to retrieve back your notes after deleting it.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Proceed",
+          onPress: () => {
+            navigation.navigate(NotesScreen.Home);
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  }
 
   function EditButton() {
     return (
@@ -49,7 +71,7 @@ export default function NotesScreenDetails() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => showAlertDelete()}
           style={{ marginLeft: 15 }}
         >
           <FontAwesome name={"trash"} size={24} color={"black"} />
