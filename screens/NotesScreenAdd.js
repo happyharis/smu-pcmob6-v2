@@ -33,6 +33,7 @@ export default function NotesScreenAdd() {
         value={noteBody}
         onChangeText={(text) => setNoteBody(text)}
         selectionColor={"gray"}
+        multiline={true}
       />
       <View style={{ flex: 1 }} />
       <TouchableOpacity
