@@ -8,15 +8,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import NotesButton from "../components/NotesButton";
+import { API, API_POSTS } from "../constants/API";
 import { NOTES_SCREEN } from "../constants/screens";
 import { theme } from "../styles";
-import { API, API_POSTS } from "../constants/API";
-import PropTypes from "prop-types";
 
 export default function NotesScreenDetails() {
   const route = useRoute();
@@ -66,21 +65,6 @@ export default function NotesScreenDetails() {
       console.log(error);
     }
   }
-
-  function SaveChangesButton(props) {
-    return (
-      <TouchableOpacity
-        style={[theme.button, { marginBottom: 10 }]}
-        onPress={props.onPress}
-      >
-        <Text style={theme.buttonText}>Save changes</Text>
-      </TouchableOpacity>
-    );
-  }
-
-  SaveChangesButton.propTypes = {
-    onPress: PropTypes.func.isRequired,
-  };
 
   return (
     <KeyboardAvoidingView
@@ -137,7 +121,9 @@ export default function NotesScreenDetails() {
         ref={bodyInputRef}
       />
       <View style={{ flex: 1 }} />
-      {editable && <SaveChangesButton onPress={() => updatePost(id)} />}
+      {editable && (
+        <NotesButton onPress={() => updatePost(id)} text={"Save changes"} />
+      )}
     </KeyboardAvoidingView>
   );
 }

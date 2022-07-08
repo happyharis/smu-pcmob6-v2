@@ -1,10 +1,4 @@
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from "react-native";
+import { TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { theme } from "../styles";
 import { FontAwesome } from "@expo/vector-icons";
@@ -13,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API, API_CREATE } from "../constants/API";
 import { NOTES_SCREEN } from "../constants/screens";
+import NotesButton from "../components/NotesButton";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
@@ -58,12 +53,7 @@ export default function NotesScreenAdd() {
         multiline={true}
       />
       <View style={{ flex: 1 }} />
-      <TouchableOpacity
-        style={theme.button}
-        onPress={async () => await savePost()}
-      >
-        <Text style={theme.buttonText}>Save</Text>
-      </TouchableOpacity>
+      <NotesButton onPress={savePost} text="Save" />
     </View>
   );
 }
