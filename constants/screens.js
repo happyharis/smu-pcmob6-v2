@@ -1,4 +1,4 @@
-export const NotesScreen = {
+export const NOTES_SCREEN = {
   Home: "NotesScreenHome",
   Details: "NotesScreenDetails",
   Add: "NotesScreenAdd",

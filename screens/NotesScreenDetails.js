@@ -1,5 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import axios from "axios";
 import React, { useRef, useState } from "react";
 import {
   Alert,
@@ -11,16 +13,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { NotesScreen } from "../constants/screens";
+import { NOTES_SCREEN } from "../constants/screens";
 import { theme } from "../styles";
+import { API, API_POSTS } from "../constants/API";
+import PropTypes from "prop-types";
 
 export default function NotesScreenDetails() {
   const route = useRoute();
   const bodyInputRef = useRef();
   const navigation = useNavigation();
-  const [noteTitle, setNoteTitle] = useState(route.params.title);
-  const [noteBody, setNoteBody] = useState(route.params.content);
+  const params = route.params;
+  const [noteTitle, setNoteTitle] = useState(params.title);
+  const [noteBody, setNoteBody] = useState(params.content);
   const [editable, setEditable] = useState(false);
+  const id = params.id;
 
   function showAlertDelete() {
     Alert.alert(
@@ -35,7 +41,7 @@ export default function NotesScreenDetails() {
         {
           text: "Proceed",
           onPress: () => {
-            navigation.navigate(NotesScreen.Home);
+            navigation.navigate(NOTES_SCREEN.Home);
           },
           style: "destructive",
         },
@@ -43,18 +49,38 @@ export default function NotesScreenDetails() {
     );
   }
 
-  function SaveChangesButton() {
+  async function updatePost(id) {
+    const post = {
+      title: noteTitle,
+      content: noteBody,
+    };
+    const token = await AsyncStorage.getItem("token");
+    try {
+      console.log(token);
+      const response = await axios.put(API + API_POSTS + `/${id}`, post, {
+        headers: { Authorization: `JWT ${token}` },
+      });
+      console.log(response.data);
+      navigation.navigate(NOTES_SCREEN.Home);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function SaveChangesButton(props) {
     return (
       <TouchableOpacity
         style={[theme.button, { marginBottom: 10 }]}
-        onPress={() => {
-          navigation.goBack();
-        }}
+        onPress={props.onPress}
       >
         <Text style={theme.buttonText}>Save changes</Text>
       </TouchableOpacity>
     );
   }
+
+  SaveChangesButton.propTypes = {
+    onPress: PropTypes.func.isRequired,
+  };
 
   return (
     <KeyboardAvoidingView
@@ -111,7 +137,7 @@ export default function NotesScreenDetails() {
         ref={bodyInputRef}
       />
       <View style={{ flex: 1 }} />
-      {editable && <SaveChangesButton />}
+      {editable && <SaveChangesButton onPress={() => updatePost(id)} />}
     </KeyboardAvoidingView>
   );
 }

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles";
-import { AUTH_SCREEN, NotesScreen } from "../constants/screens";
+import { AUTH_SCREEN, NOTES_SCREEN } from "../constants/screens";
 import axios from "axios";
 import { API, API_POSTS } from "../constants/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +21,7 @@ export default function NotesScreenHome() {
     return (
       <TouchableOpacity
         style={styles.noteCard}
-        onPress={() => navigation.navigate(NotesScreen.Details, item)}
+        onPress={() => navigation.navigate(NOTES_SCREEN.Details, item)}
       >
         <Text style={styles.noteCardTitle}>{item.title}</Text>
         <Text style={styles.noteCardBodyText}>
@@ -73,7 +73,7 @@ export default function NotesScreenHome() {
       <TouchableOpacity
         style={theme.button}
         onPress={() => {
-          navigation.navigate(NotesScreen.Add);
+          navigation.navigate(NOTES_SCREEN.Add);
         }}
       >
         <Text style={theme.buttonText}>Add Note</Text>

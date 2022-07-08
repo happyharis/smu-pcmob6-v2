@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API, API_CREATE } from "../constants/API";
-import { NotesScreen } from "../constants/screens";
+import { NOTES_SCREEN } from "../constants/screens";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
@@ -31,7 +31,7 @@ export default function NotesScreenAdd() {
         headers: { Authorization: `JWT ${token}` },
       });
       console.log(response.data);
-      navigation.navigate(NotesScreen.Home, { post: post });
+      navigation.navigate(NOTES_SCREEN.Home, { post: post });
     } catch (error) {
       console.log(error);
     }
