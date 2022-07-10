@@ -6,10 +6,20 @@ import React, { useEffect, useState } from "react";
 import HomeStack from "./components/HomeStack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { Provider } from "react-redux";
+import store from "./store";
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  return (
+    <Provider store={store}>
+      <AppSource />
+    </Provider>
+  );
+}
+
+function AppSource() {
   const [loggedIn, setLoggedIn] = useState("");
 
   async function loadToken() {
