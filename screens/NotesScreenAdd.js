@@ -1,35 +1,28 @@
-import { TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { theme } from "../styles";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { API, API_CREATE } from "../constants/API";
-import { NOTES_SCREEN } from "../constants/screens";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { theme } from "../styles";
+import { nanoid } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
+import { postAdded } from "../features/postsSlice";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
   const [noteTitle, setNoteTitle] = useState("");
   const [noteBody, setNoteBody] = useState("");
 
+  const dispatch = useDispatch();
+
   async function savePost() {
     const post = {
+      id: nanoid(),
       title: noteTitle,
       content: noteBody,
     };
-    const token = await AsyncStorage.getItem("token");
-    try {
-      console.log(token);
-      const response = await axios.post(API + API_CREATE, post, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response.data);
-      navigation.navigate(NOTES_SCREEN.Home, { post: post });
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(postAdded(post));
+    navigation.goBack();
   }
 
   return (

@@ -1,21 +1,19 @@
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import {
+  FlatList,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  FlatList,
+  View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { NOTES_SCREEN } from "../constants/screens";
 import { theme } from "../styles";
-import { AUTH_SCREEN, NOTES_SCREEN } from "../constants/screens";
-import axios from "axios";
-import { API, API_POSTS } from "../constants/API";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NotesScreenHome() {
+  const posts = useSelector((state) => state.posts);
   const navigation = useNavigation();
-  const [posts, setPosts] = useState("");
 
   function renderItem({ item }) {
     return (
@@ -31,34 +29,6 @@ export default function NotesScreenHome() {
     );
   }
 
-  useEffect(() => {
-    console.log("Setting up nav listener");
-    // Check for when we come back to this screen
-    const removeListener = navigation.addListener("focus", () => {
-      console.log("Running nav listener");
-      getPosts();
-    });
-    getPosts();
-    return removeListener;
-  }, []);
-
-  async function getPosts() {
-    const token = await AsyncStorage.getItem("token");
-    console.log("Token: " + token);
-    try {
-      const response = await axios.get(API + API_POSTS, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response.data);
-      setPosts(response.data);
-      return "completed";
-    } catch (error) {
-      console.log("error.response:" + error.response.data);
-      if (error.response.data.error == "Invalid token") {
-        navigation.navigate(AUTH_SCREEN);
-      }
-    }
-  }
   return (
     <View style={theme.container}>
       <Text style={[theme.title, { marginBottom: 20 }]}>notes</Text>
