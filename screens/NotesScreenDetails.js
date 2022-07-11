@@ -12,12 +12,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
 import { API, API_POSTS } from "../constants/API";
 import { NOTES_SCREEN } from "../constants/screens";
+import { postUpdated } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
+  const dispatch = useDispatch();
   const route = useRoute();
   const bodyInputRef = useRef();
   const navigation = useNavigation();
@@ -62,21 +65,13 @@ export default function NotesScreenDetails() {
   }
 
   async function updatePost(id) {
-    const post = {
+    const updatedPost = {
+      id,
       title: noteTitle,
       content: noteBody,
     };
-    const token = await AsyncStorage.getItem("token");
-    try {
-      console.log(token);
-      const response = await axios.put(API + API_POSTS + `/${id}`, post, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response.data);
-      navigation.navigate(NOTES_SCREEN.Home);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(postUpdated(updatedPost));
+    navigation.goBack();
   }
 
   return (
@@ -135,7 +130,11 @@ export default function NotesScreenDetails() {
       />
       <View style={{ flex: 1 }} />
       {editable && (
-        <NotesButton onPress={() => updatePost(id)} text={"Save changes"} />
+        <NotesButton
+          onPress={() => updatePost(id)}
+          text={"Save changes"}
+          isAsync={false}
+        />
       )}
     </KeyboardAvoidingView>
   );
