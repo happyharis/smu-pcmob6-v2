@@ -1,12 +1,13 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import AuthScreen from "./screens/AuthScreen";
 import React, { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { Provider, useDispatch } from "react-redux";
 import HomeStack from "./components/HomeStack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { Provider } from "react-redux";
+import { setPhotoUri } from "./features/accountSlice";
+import AuthScreen from "./screens/AuthScreen";
 import store from "./store";
 
 const Stack = createStackNavigator();
@@ -21,9 +22,12 @@ export default function App() {
 
 function AppSource() {
   const [loggedIn, setLoggedIn] = useState("");
+  const dispatch = useDispatch();
 
   async function loadToken() {
     const isLoggedIn = await AsyncStorage.getItem("token");
+    const photo = await AsyncStorage.getItem("photo_uri");
+    if (photo) dispatch(setPhotoUri(photo.uri));
     setLoggedIn(isLoggedIn);
   }
   useEffect(() => {

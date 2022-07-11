@@ -4,10 +4,13 @@ import { Camera } from "expo-camera";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { PROFILE_SCREEN } from "../constants/screens";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { setPhotoUri } from "../features/accountSlice";
 
 export default function CameraScreen() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const [hasPermission, setHasPermission] = useState(null);
   const [back, setBack] = useState(true);
   const cameraRef = useRef(null);
@@ -31,8 +34,8 @@ export default function CameraScreen() {
 
   async function takePicture() {
     const photo = await cameraRef.current.takePictureAsync();
-    console.log(photo);
-    // dispatch({ ...dispatch(uploadPicAction()), payload: photo.uri });
+    await AsyncStorage.setItem("photo_uri", photo.uri);
+    dispatch(setPhotoUri(photo.uri));
     navigation.navigate(PROFILE_SCREEN);
   }
 

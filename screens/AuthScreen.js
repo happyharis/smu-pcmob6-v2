@@ -32,14 +32,12 @@ export default function AuthScreen() {
 
   async function login() {
     Keyboard.dismiss();
-
     try {
       const response = await axios.post(API + API_LOGIN, {
         username,
         password,
       });
       await AsyncStorage.setItem("token", response.data.access_token);
-
       setUsername("");
       setPassword("");
       navigation.navigate("HomeStack");
