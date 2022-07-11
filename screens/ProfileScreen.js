@@ -8,8 +8,8 @@ import { CAMERA_SCREEN } from "../constants/screens";
 import { theme } from "../styles";
 
 export default function ProfileScreen() {
-  const photo = useSelector((state) => state.account.photoUri);
-
+  const { photoUri, username } = useSelector((state) => state.account);
+  console.log("photoUri:", photoUri);
   const navigation = useNavigation();
   return (
     <View style={theme.container}>
@@ -17,10 +17,16 @@ export default function ProfileScreen() {
 
       <Image
         source={
-          photo ? { uri: photo } : require("../assets/profile-placeholder.png")
+          photoUri
+            ? { uri: photoUri }
+            : require("../assets/profile-placeholder.png")
         }
         style={{ height: 120, width: 120, borderRadius: 3, marginBottom: 20 }}
       />
+
+      <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
+        {username}
+      </Text>
 
       <TouchableOpacity
         style={styles.outlinedButton}

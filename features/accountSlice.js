@@ -7,7 +7,7 @@ export const accountSlice = createSlice({
     photoUri: "",
   },
   reducers: {
-    setUsername: (state, action) => {
+    setUsernameProfile: (state, action) => {
       state.username = action.payload;
     },
     setPhotoUri: (state, action) => {
@@ -17,6 +17,6 @@ export const accountSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setUsername, setPhotoUri } = accountSlice.actions;
+export const { setUsernameProfile, setPhotoUri } = accountSlice.actions;
 
 export default accountSlice.reducer;

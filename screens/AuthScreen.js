@@ -14,6 +14,8 @@ import { API, API_LOGIN, API_SIGNUP } from "../constants/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles";
 import NotesButton from "../components/NotesButton";
+import { useDispatch } from "react-redux";
+import { setPhotoUri, setUsernameProfile } from "../features/accountSlice";
 
 if (
   Platform.OS === "android" &&
@@ -24,6 +26,7 @@ if (
 
 export default function AuthScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorText, setErrorText] = useState("");
@@ -38,15 +41,16 @@ export default function AuthScreen() {
         password,
       });
       await AsyncStorage.setItem("token", response.data.access_token);
+      await dispatch(setUsernameProfile(username));
+      const photoUri = await AsyncStorage.getItem("photo_uri");
+      if (photoUri) dispatch(setPhotoUri(photoUri));
       setUsername("");
       setPassword("");
       navigation.navigate("HomeStack");
     } catch (error) {
       console.log("Failed logging in!", error);
       setErrorText(error.response.data.description);
-      if (error.response.status == 404) {
-        setErrorText("User does not exist");
-      }
+      if (error.response.status == 404) setErrorText("User does not exist");
     }
   }
 

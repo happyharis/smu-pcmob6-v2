@@ -1,12 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Provider, useDispatch } from "react-redux";
 import HomeStack from "./components/HomeStack";
-import { setPhotoUri } from "./features/accountSlice";
+import { API } from "./constants/API";
+import { setPhotoUri, setUsernameProfile } from "./features/accountSlice";
 import AuthScreen from "./screens/AuthScreen";
 import store from "./store";
 
@@ -24,14 +26,25 @@ function AppSource() {
   const [loggedIn, setLoggedIn] = useState("");
   const dispatch = useDispatch();
 
-  async function loadToken() {
-    const isLoggedIn = await AsyncStorage.getItem("token");
-    const photo = await AsyncStorage.getItem("photo_uri");
-    if (photo) dispatch(setPhotoUri(photo.uri));
-    setLoggedIn(isLoggedIn);
+  async function loadUsername(token) {
+    const response = await axios.get(API + "/whoami", {
+      headers: { Authorization: `JWT ${token}` },
+    });
+    return response.data.username;
+  }
+
+  async function loadConfig() {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      const username = await loadUsername(token);
+      const photoUri = await AsyncStorage.getItem("photo_uri");
+      if (photoUri) dispatch(setPhotoUri(photoUri));
+      if (username) dispatch(setUsernameProfile(username));
+    }
+    setLoggedIn(token);
   }
   useEffect(() => {
-    loadToken();
+    loadConfig();
   }, []);
 
   const LoadingScreen = () => (

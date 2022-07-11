@@ -35,7 +35,7 @@ export default function CameraScreen() {
   async function takePicture() {
     const photo = await cameraRef.current.takePictureAsync();
     await AsyncStorage.setItem("photo_uri", photo.uri);
-    dispatch(setPhotoUri(photo.uri));
+    await dispatch(setPhotoUri(photo.uri));
     navigation.navigate(PROFILE_SCREEN);
   }
 
