@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
-import { postDeleted, postUpdated } from "../features/postsSlice";
+import { postDeleted, updatePostThunk } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
@@ -48,13 +48,18 @@ export default function NotesScreenDetails() {
   }
 
   async function updatePost(id) {
-    const updatedPost = {
-      id,
-      title: noteTitle,
-      content: noteBody,
-    };
-    dispatch(postUpdated(updatedPost));
-    navigation.goBack();
+    try {
+      const updatedPost = {
+        id,
+        title: noteTitle,
+        content: noteBody,
+      };
+      await dispatch(updatePostThunk(updatedPost));
+    } catch (error) {
+      console.error("Failed to update the post: ", error);
+    } finally {
+      navigation.goBack();
+    }
   }
 
   return (
