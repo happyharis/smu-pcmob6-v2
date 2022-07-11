@@ -1,19 +1,31 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NOTES_SCREEN } from "../constants/screens";
+import { fetchPosts } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenHome() {
-  const posts = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.posts);
   const navigation = useNavigation();
+
+  const postStatus = useSelector((state) => state.posts.status);
+  const isLoading = postStatus === "loading";
+
+  useEffect(() => {
+    if (postStatus === "idle") {
+      dispatch(fetchPosts());
+    }
+  }, [postStatus, dispatch]);
 
   function renderItem({ item }) {
     return (
@@ -32,6 +44,8 @@ export default function NotesScreenHome() {
   return (
     <View style={theme.container}>
       <Text style={[theme.title, { marginBottom: 20 }]}>notes</Text>
+
+      {isLoading && <ActivityIndicator />}
 
       <FlatList
         data={posts}
