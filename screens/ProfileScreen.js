@@ -9,7 +9,6 @@ import { theme } from "../styles";
 
 export default function ProfileScreen() {
   const { photoUri, username } = useSelector((state) => state.account);
-  console.log("photoUri:", photoUri);
   const navigation = useNavigation();
   return (
     <View style={theme.container}>
