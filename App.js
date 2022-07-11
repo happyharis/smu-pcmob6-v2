@@ -25,7 +25,6 @@ function AppSource() {
   async function loadToken() {
     const isLoggedIn = await AsyncStorage.getItem("token");
     setLoggedIn(isLoggedIn);
-    console.log(isLoggedIn);
   }
   useEffect(() => {
     loadToken();
