@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API, API_POSTS } from "../constants/API";
+import { API, API_CREATE, API_POSTS } from "../constants/API";
 
 const initialState = {
   posts: [],
@@ -17,13 +17,21 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
+export const addNewPost = createAsyncThunk(
+  "posts/addNewPost",
+  async (newPost) => {
+    const token = await AsyncStorage.getItem("token");
+    const response = await axios.post(API + API_CREATE, newPost, {
+      headers: { Authorization: `JWT ${token}` },
+    });
+    return response.data;
+  }
+);
+
 const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    postAdded(state, action) {
-      state.posts.push(action.payload);
-    },
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
       const existingPost = state.posts.find((post) => post.id === id);
@@ -51,6 +59,10 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+        console.log(action.error.message);
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.posts.push(action.payload);
       });
   },
 });

@@ -1,12 +1,12 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { nanoid } from "@reduxjs/toolkit";
 import React, { useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { theme } from "../styles";
-import { nanoid } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
-import { postAdded } from "../features/postsSlice";
+import { addNewPost } from "../features/postsSlice";
+import { theme } from "../styles";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
@@ -15,14 +15,23 @@ export default function NotesScreenAdd() {
 
   const dispatch = useDispatch();
 
+  const canSave = [noteTitle, noteBody].every(Boolean);
+
   async function savePost() {
-    const post = {
-      id: nanoid(),
-      title: noteTitle,
-      content: noteBody,
-    };
-    dispatch(postAdded(post));
-    navigation.goBack();
+    if (canSave) {
+      try {
+        const post = {
+          id: nanoid(),
+          title: noteTitle,
+          content: noteBody,
+        };
+        await dispatch(addNewPost(post));
+      } catch (error) {
+        console.error("Failed to save the post: ", error);
+      } finally {
+        navigation.goBack();
+      }
+    }
   }
 
   return (
