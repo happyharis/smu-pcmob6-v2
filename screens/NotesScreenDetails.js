@@ -1,7 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
 import React, { useRef, useState } from "react";
 import {
   Alert,
@@ -14,9 +12,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
-import { API, API_POSTS } from "../constants/API";
-import { NOTES_SCREEN } from "../constants/screens";
-import { postUpdated } from "../features/postsSlice";
+import { postDeleted, postUpdated } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
@@ -41,27 +37,14 @@ export default function NotesScreenDetails() {
         },
         {
           text: "Proceed",
-          onPress: async () => {
-            await deletePost(id);
-            navigation.navigate(NOTES_SCREEN.Home);
+          onPress: () => {
+            dispatch(postDeleted(id));
+            navigation.goBack();
           },
           style: "destructive",
         },
       ]
     );
-  }
-
-  async function deletePost(id) {
-    const token = await AsyncStorage.getItem("token");
-    console.log("Deleting " + id);
-    try {
-      const response = await axios.delete(API + API_POSTS + `/${id}`, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   async function updatePost(id) {
