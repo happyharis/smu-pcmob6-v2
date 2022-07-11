@@ -30,7 +30,6 @@ export const addNewPost = createAsyncThunk(
 export const updatePostThunk = createAsyncThunk(
   "posts/updatePost",
   async (updatedPost) => {
-    console.log("updatedPost: ", updatedPost);
     const token = await AsyncStorage.getItem("token");
     const response = await axios.put(
       API + API_POSTS + `/${updatedPost.id}`,
@@ -42,17 +41,20 @@ export const updatePostThunk = createAsyncThunk(
     return response.data;
   }
 );
+export const deletePostThunk = createAsyncThunk(
+  "posts/deletePost",
+  async (id) => {
+    const token = await AsyncStorage.getItem("token");
+    await axios.delete(API + API_POSTS + `/${id}`, {
+      headers: { Authorization: `JWT ${token}` },
+    });
+    return id;
+  }
+);
 
 const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {
-    postDeleted(state, action) {
-      const id = action.payload;
-      const updatedPosts = state.posts.filter((item) => item.id !== id);
-      return updatedPosts;
-    },
-  },
   extraReducers(builder) {
     builder
       .addCase(fetchPosts.pending, (state) => {
@@ -66,7 +68,7 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-        console.log(action.error.message);
+        console.log("Failed to fetch posts. Error:", action.error.message);
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
         state.posts.push(action.payload);
@@ -78,10 +80,13 @@ const postsSlice = createSlice({
           existingPost.title = title;
           existingPost.content = content;
         }
+      })
+      .addCase(deletePostThunk.fulfilled, (state, action) => {
+        const id = action.payload;
+        const updatedPosts = state.posts.filter((item) => item.id !== id);
+        state.posts = updatedPosts;
       });
   },
 });
-
-export const { postAdded, postUpdated, postDeleted } = postsSlice.actions;
 
 export default postsSlice.reducer;

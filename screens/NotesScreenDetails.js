@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
-import { postDeleted, updatePostThunk } from "../features/postsSlice";
+import { deletePostThunk, updatePostThunk } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
@@ -37,14 +37,21 @@ export default function NotesScreenDetails() {
         },
         {
           text: "Proceed",
-          onPress: () => {
-            dispatch(postDeleted(id));
-            navigation.goBack();
-          },
+          onPress: async () => deletePost(id),
           style: "destructive",
         },
       ]
     );
+  }
+
+  async function deletePost(id) {
+    try {
+      await dispatch(deletePostThunk(id));
+    } catch (error) {
+      console.error("Failed to update the post: ", error);
+    } finally {
+      navigation.goBack();
+    }
   }
 
   async function updatePost(id) {

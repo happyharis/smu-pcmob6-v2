@@ -31,7 +31,6 @@ export default function AuthScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   async function login() {
-    console.log("---- Login time ----");
     Keyboard.dismiss();
 
     try {
@@ -39,15 +38,13 @@ export default function AuthScreen() {
         username,
         password,
       });
-      console.log("Success logging in!" + response);
       await AsyncStorage.setItem("token", response.data.access_token);
 
       setUsername("");
       setPassword("");
       navigation.navigate("HomeStack");
     } catch (error) {
-      console.log("Error logging in!");
-      console.log(error);
+      console.log("Failed logging in!", error);
       setErrorText(error.response.data.description);
       if (error.response.status == 404) {
         setErrorText("User does not exist");
@@ -68,13 +65,10 @@ export default function AuthScreen() {
           // We have an error message for if the user already exists
           setErrorText(response.data.Error);
         } else {
-          console.log("Success signing up!");
-
           login();
         }
       } catch (error) {
-        console.log("Error logging in!");
-        console.log(error.response);
+        console.log("Failed logging in. Error: ", error.response);
         setErrorText(error.response.data.description);
       }
     }
