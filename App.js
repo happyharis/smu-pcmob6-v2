@@ -23,7 +23,8 @@ export default function App() {
 }
 
 function AppSource() {
-  const [loggedIn, setLoggedIn] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const dispatch = useDispatch();
 
   async function loadUsername(token) {
@@ -35,13 +36,19 @@ function AppSource() {
 
   async function loadConfig() {
     const token = await AsyncStorage.getItem("token");
-    if (token) {
-      const username = await loadUsername(token);
-      const photoUri = await AsyncStorage.getItem("photo_uri");
-      if (photoUri) dispatch(setPhotoUri(photoUri));
-      if (username) dispatch(setUsernameProfile(username));
+    try {
+      if (token) {
+        const username = await loadUsername(token);
+        const photoUri = await AsyncStorage.getItem("photo_uri");
+        if (photoUri) dispatch(setPhotoUri(photoUri));
+        if (username) dispatch(setUsernameProfile(username));
+        setLoggedIn(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoggedIn(false);
     }
-    setLoggedIn(token);
+    setLoading(false);
   }
   useEffect(() => {
     loadConfig();
@@ -53,7 +60,7 @@ function AppSource() {
     </View>
   );
 
-  return loggedIn == "" ? (
+  return loading ? (
     <LoadingScreen />
   ) : (
     <NavigationContainer>
