@@ -1,7 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
 import React, { useRef, useState } from "react";
 import {
   Alert,
@@ -12,12 +10,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
-import { API, API_POSTS } from "../constants/API";
-import { NOTES_SCREEN } from "../constants/screens";
+import { deletePostThunk, updatePostThunk } from "../features/postsSlice";
 import { theme } from "../styles";
 
 export default function NotesScreenDetails() {
+  const dispatch = useDispatch();
   const route = useRoute();
   const bodyInputRef = useRef();
   const navigation = useNavigation();
@@ -38,10 +37,7 @@ export default function NotesScreenDetails() {
         },
         {
           text: "Proceed",
-          onPress: async () => {
-            await deletePost(id);
-            navigation.navigate(NOTES_SCREEN.Home);
-          },
+          onPress: async () => deletePost(id),
           style: "destructive",
         },
       ]
@@ -49,33 +45,27 @@ export default function NotesScreenDetails() {
   }
 
   async function deletePost(id) {
-    const token = await AsyncStorage.getItem("token");
-    console.log("Deleting " + id);
     try {
-      const response = await axios.delete(API + API_POSTS + `/${id}`, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response);
+      await dispatch(deletePostThunk(id));
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update the post: ", error);
+    } finally {
+      navigation.goBack();
     }
   }
 
   async function updatePost(id) {
-    const post = {
-      title: noteTitle,
-      content: noteBody,
-    };
-    const token = await AsyncStorage.getItem("token");
     try {
-      console.log(token);
-      const response = await axios.put(API + API_POSTS + `/${id}`, post, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response.data);
-      navigation.navigate(NOTES_SCREEN.Home);
+      const updatedPost = {
+        id,
+        title: noteTitle,
+        content: noteBody,
+      };
+      await dispatch(updatePostThunk(updatedPost));
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update the post: ", error);
+    } finally {
+      navigation.goBack();
     }
   }
 
@@ -135,7 +125,11 @@ export default function NotesScreenDetails() {
       />
       <View style={{ flex: 1 }} />
       {editable && (
-        <NotesButton onPress={() => updatePost(id)} text={"Save changes"} />
+        <NotesButton
+          onPress={() => updatePost(id)}
+          text={"Save changes"}
+          isAsync={false}
+        />
       )}
     </KeyboardAvoidingView>
   );

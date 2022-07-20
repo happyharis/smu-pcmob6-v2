@@ -1,34 +1,36 @@
-import { TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { theme } from "../styles";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { API, API_CREATE } from "../constants/API";
-import { NOTES_SCREEN } from "../constants/screens";
+import { nanoid } from "@reduxjs/toolkit";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { useDispatch } from "react-redux";
 import NotesButton from "../components/NotesButton";
+import { addNewPost } from "../features/postsSlice";
+import { theme } from "../styles";
 
 export default function NotesScreenAdd() {
   const navigation = useNavigation();
   const [noteTitle, setNoteTitle] = useState("");
   const [noteBody, setNoteBody] = useState("");
 
+  const dispatch = useDispatch();
+
+  const canSave = [noteTitle, noteBody].every(Boolean);
+
   async function savePost() {
-    const post = {
-      title: noteTitle,
-      content: noteBody,
-    };
-    const token = await AsyncStorage.getItem("token");
-    try {
-      console.log(token);
-      const response = await axios.post(API + API_CREATE, post, {
-        headers: { Authorization: `JWT ${token}` },
-      });
-      console.log(response.data);
-      navigation.navigate(NOTES_SCREEN.Home, { post: post });
-    } catch (error) {
-      console.log(error);
+    if (canSave) {
+      try {
+        const post = {
+          id: nanoid(),
+          title: noteTitle,
+          content: noteBody,
+        };
+        await dispatch(addNewPost(post));
+      } catch (error) {
+        console.error("Failed to save the post: ", error);
+      } finally {
+        navigation.goBack();
+      }
     }
   }
 

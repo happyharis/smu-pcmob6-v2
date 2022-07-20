@@ -1,37 +1,45 @@
-import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { theme } from "../styles";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 import NotesButton from "../components/NotesButton";
 import { CAMERA_SCREEN } from "../constants/screens";
+import { theme } from "../styles";
 
 export default function ProfileScreen() {
+  const { photoUri, username } = useSelector((state) => state.account);
   const navigation = useNavigation();
   return (
     <View style={theme.container}>
       <Text style={[theme.title, { marginBottom: 20 }]}>profile</Text>
 
-      <View>
-        <Image
-          source={require("../assets/profile-placeholder.png")}
-          style={{ height: 120, width: 120, borderRadius: 3, marginBottom: 20 }}
-        />
+      <Image
+        source={
+          photoUri
+            ? { uri: photoUri }
+            : require("../assets/profile-placeholder.png")
+        }
+        style={{ height: 120, width: 120, borderRadius: 3, marginBottom: 20 }}
+      />
 
-        <TouchableOpacity
-          style={styles.outlinedButton}
-          onPress={() => navigation.navigate(CAMERA_SCREEN)}
-        >
-          <Text style={styles.outlinedButtonText}>Upload Photo</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
+        {username}
+      </Text>
+
+      <TouchableOpacity
+        style={styles.outlinedButton}
+        onPress={() => navigation.navigate(CAMERA_SCREEN)}
+      >
+        <Text style={styles.outlinedButtonText}>Upload Photo</Text>
+      </TouchableOpacity>
 
       <View style={{ flex: 1 }} />
 
       <NotesButton
         onPress={async () => {
-          navigation.navigate("AuthScreen");
           await AsyncStorage.removeItem("token");
+          navigation.navigate("AuthScreen");
         }}
         text="Logout"
         marginBottom={0}

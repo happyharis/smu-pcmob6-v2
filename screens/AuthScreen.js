@@ -14,6 +14,8 @@ import { API, API_LOGIN, API_SIGNUP } from "../constants/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles";
 import NotesButton from "../components/NotesButton";
+import { useDispatch } from "react-redux";
+import { setPhotoUri, setUsernameProfile } from "../features/accountSlice";
 
 if (
   Platform.OS === "android" &&
@@ -24,6 +26,7 @@ if (
 
 export default function AuthScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorText, setErrorText] = useState("");
@@ -31,27 +34,23 @@ export default function AuthScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   async function login() {
-    console.log("---- Login time ----");
     Keyboard.dismiss();
-
     try {
       const response = await axios.post(API + API_LOGIN, {
         username,
         password,
       });
-      console.log("Success logging in!" + response);
       await AsyncStorage.setItem("token", response.data.access_token);
-
+      await dispatch(setUsernameProfile(username));
+      const photoUri = await AsyncStorage.getItem("photo_uri");
+      if (photoUri) dispatch(setPhotoUri(photoUri));
       setUsername("");
       setPassword("");
       navigation.navigate("HomeStack");
     } catch (error) {
-      console.log("Error logging in!");
-      console.log(error);
+      console.log("Failed logging in!", error);
       setErrorText(error.response.data.description);
-      if (error.response.status == 404) {
-        setErrorText("User does not exist");
-      }
+      if (error.response.status == 404) setErrorText("User does not exist");
     }
   }
 
@@ -68,13 +67,10 @@ export default function AuthScreen() {
           // We have an error message for if the user already exists
           setErrorText(response.data.Error);
         } else {
-          console.log("Success signing up!");
-
           login();
         }
       } catch (error) {
-        console.log("Error logging in!");
-        console.log(error.response);
+        console.log("Failed logging in. Error: ", error.response);
         setErrorText(error.response.data.description);
       }
     }

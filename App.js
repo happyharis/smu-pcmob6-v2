@@ -1,24 +1,57 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import axios from "axios";
 import { StatusBar } from "expo-status-bar";
-import AuthScreen from "./screens/AuthScreen";
 import React, { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { Provider, useDispatch } from "react-redux";
 import HomeStack from "./components/HomeStack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { API } from "./constants/API";
+import { setPhotoUri, setUsernameProfile } from "./features/accountSlice";
+import AuthScreen from "./screens/AuthScreen";
+import store from "./store";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState("");
+  return (
+    <Provider store={store}>
+      <AppSource />
+    </Provider>
+  );
+}
 
-  async function loadToken() {
-    const isLoggedIn = await AsyncStorage.getItem("token");
-    setLoggedIn(isLoggedIn);
-    console.log(isLoggedIn);
+function AppSource() {
+  const [loading, setLoading] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+
+  async function loadUsername(token) {
+    const response = await axios.get(API + "/whoami", {
+      headers: { Authorization: `JWT ${token}` },
+    });
+    return response.data.username;
+  }
+
+  async function loadConfig() {
+    const token = await AsyncStorage.getItem("token");
+    try {
+      if (token) {
+        const username = await loadUsername(token);
+        const photoUri = await AsyncStorage.getItem("photo_uri");
+        if (photoUri) dispatch(setPhotoUri(photoUri));
+        if (username) dispatch(setUsernameProfile(username));
+        setLoggedIn(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoggedIn(false);
+    }
+    setLoading(false);
   }
   useEffect(() => {
-    loadToken();
+    loadConfig();
   }, []);
 
   const LoadingScreen = () => (
@@ -27,7 +60,7 @@ export default function App() {
     </View>
   );
 
-  return loggedIn == "" ? (
+  return loading ? (
     <LoadingScreen />
   ) : (
     <NavigationContainer>
