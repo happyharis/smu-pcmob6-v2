@@ -102,9 +102,7 @@ export default function AuthScreen() {
         />
       </View>
 
-      {isLogInScreen ? (
-        <View />
-      ) : (
+      {isLogInScreen && (
         <View style={theme.inputView}>
           <TextInput
             style={theme.textInput}
